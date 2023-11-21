@@ -25,13 +25,13 @@ body {
   width: 128px;
 }
 
-.x-win{
+.x-win {
   .cell:nth-child(odd) {
     background-color: red;
   }
 }
 
-.o-win{
+.o-win {
   .cell:nth-child(even) {
     background-color: blue;
   }
