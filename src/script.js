@@ -6,7 +6,7 @@ console.log('Hello world!');
 const wrapper = createNode('div', 'wrapper');
 document.body.append(wrapper);
 
-const heading = createNode('h1', 'font-effect-anaglyph');
+const heading = createNode('h1'); // 'font-effect-anaglyph'
 heading.innerHTML = 'Tic Tac Toe';
 wrapper.append(heading);
 

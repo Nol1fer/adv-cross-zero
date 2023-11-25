@@ -1,5 +1,5 @@
 body {
-  background-color: dimgray;
+  background-color: rgb(180, 133, 45);
   font-family: "Roboto", sans-serif;
 }
 
@@ -21,19 +21,19 @@ body {
 .field {
   display: flex;
   flex-wrap: wrap;
-  gap: 1px;
+  gap: 0px;
   width: 128px;
 }
 
 .x-win {
   .cell:nth-child(odd) {
-    background-color: red;
+    background-color: rgb(211, 138, 138);
   }
 }
 
 .o-win {
   .cell:nth-child(even) {
-    background-color: blue;
+    background-color: rgb(137, 137, 219);
   }
 }
 
