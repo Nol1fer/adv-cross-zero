@@ -33,8 +33,8 @@ export default class BigField {
     }
 
     gameSimulation() {
-            this.aiMove();
-            this.playerTurn = (this.playerTurn + 1) % players.length;
+        this.aiMove();
+        this.playerTurn = (this.playerTurn + 1) % players.length;
     }
 
     handleMouseDown = (event) => {
@@ -60,6 +60,7 @@ export default class BigField {
     };
 
     checkBigFieldStatus(fieldIndex) {
+        if (this.fieldArray[fieldIndex].status === null) return;
         const checkArray = this.fieldArray.map(field => field.status);
 
         if (this.fieldArray[fieldIndex].status === 'Tie') {
