@@ -14,17 +14,15 @@ export default class Cell {
 
     tryMarkCell(mark) {
         if (this.owner != null) return false;
+
         this.owner = mark;
         this.node.innerHTML = mark;
-        console.log('owner: ' + this.owner);
+        console.log(this.node);
+        console.log(`Cell owner - ${this.owner}`);
         return true;
     }
 
-    resetDisplay(){
-        this.node.innerHTML = '';
-    }
-
-    changeCellDisplay(value){
+    changeCellDisplay(value) {
         this.node.innerHTML = value;
     }
 }

@@ -37,6 +37,12 @@ body {
   }
 }
 
+.tie {
+  .cell {
+    background-color: grey;
+  }
+}
+
 .cell {
   width: 40px;
   height: 40px;

@@ -1,7 +1,7 @@
 import BigField from "./classes/BigField.js";
 import createNode from "./createNode.js";
 
-console.log('Hello world!');
+console.log('Welcome to Tic Tac Toe!');
 
 const wrapper = createNode('div', 'wrapper');
 document.body.append(wrapper);

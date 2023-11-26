@@ -7,7 +7,7 @@ export default class Field {
     constructor(index) {
         this.cellArray = [];
         this.node = this.createFieldNode(index);
-        this.winner = null;
+        this.status = null;
     }
 
     createFieldNode(index) {
@@ -22,16 +22,20 @@ export default class Field {
     }
 
     tryMarkField(cellIndex, mark) {
-        if (this.winner !== null) return false;
+        if (this.status !== null) return false;
         const currentCell = this.cellArray[cellIndex];
         if (currentCell.tryMarkCell(mark) === false) return false;
-        if (this.checkFieldWinner(cellIndex) === false) {
-            if (this.checkFieldTie()) this.winner = 'Tie';
-        }
+        this.checkFieldStatus(cellIndex);
         return true;
     }
 
-    checkFieldWinner(cellIndex) {
+    checkFieldStatus(cellIndex) {
+        let isWin = this.checkFieldWin(cellIndex);
+        let isTie = this.checkFieldTie();
+        if (this.status !== null) this.displayStatus(this.status);
+    }
+
+    checkFieldWin(cellIndex) {
         let col = cellIndex % FIELD_SIZE;
         let row = (cellIndex - col) / FIELD_SIZE;
         let flagWinner = false;
@@ -58,34 +62,42 @@ export default class Field {
         }
 
         if (flagWinner) {
-            this.winner = this.cellArray[cellIndex].owner;
-            console.log(`field winner: ${this.winner}`);
-            this.displayWinner(this.winner);
+            this.status = this.cellArray[cellIndex].owner;
             return true;
         }
         return false;
     }
 
-    displayWinner(winner) {
-        if (winner == 'X') {
+    checkFieldTie() {
+        if (this.status !== null) return false;
+        let isTie = this.cellArray.filter(item => item.owner === null).length === 0;
+        if (isTie) {
+            this.status = 'Tie';
+            return true;
+        }
+        return false;
+    }
+
+    displayStatus(status) {
+        console.log(`field status: ${status}`);
+        if (status === 'X') {
             this.node.classList.add('x-win');
             // this.cellArray.forEach((cell, index) => {
             //     if (index % 2 == 0) cell.changeCellDisplay('X');
-            //     else cell.resetDisplay();
+            //     else cell.changeCellDisplay('');
             // });
         }
-        if (winner == 'O') {
+        if (status === 'O') {
             this.node.classList.add('o-win');
             // this.cellArray.forEach((cell, index) => {
             //     if (index % 2 == 1) cell.changeCellDisplay('O');
-            //     else cell.resetDisplay();
+            //     else cell.changeCellDisplay('');
             // });
+        }
+        if (status === 'Tie') {
+            this.node.classList.add('tie');
         }
     }
 
-    checkFieldTie() {
-        if (this.winner !== null) return;
-        let isTie = true;
-        return this.cellArray.filter(item => item.owner === null).length === 0;
-    }
+
 }

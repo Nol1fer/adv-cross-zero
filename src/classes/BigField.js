@@ -49,8 +49,8 @@ export default class BigField {
                 do {
                     const randomCellIndex = getRandomInt(0, 9);
                     const randomFieldIndex = getRandomInt(0, 9);
-                    // console.log(`randomCellIndex: ${randomCellIndex}, randomFieldIndex: ${randomFieldIndex}`);
                     const rCurrentField = this.fieldArray[randomFieldIndex];
+                    console.log(`AI trying cell: field: ${randomFieldIndex}, cell: ${randomCellIndex}`);
                     aiMadeTurn = rCurrentField.tryMarkField(randomCellIndex, players[this.playerTurn]);
                 } while (!aiMadeTurn);
 
