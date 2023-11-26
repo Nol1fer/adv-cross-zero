@@ -1,4 +1,6 @@
 import createNode from "../createNode.js";
+import checkFieldTie from "../functions/checkFieldTie.js";
+import checkFieldWin from "../functions/checkFieldWin.js";
 import Field from "./Field.js";
 
 const BIG_FIELD_SIZE = 3;
@@ -14,12 +16,12 @@ function getRandomInt(min, max) {
 export default class BigField {
     constructor() {
         this.node = createNode('div', 'big-field');
-        this.fieldArray = [];
-        this.playerTurn = 0;
     }
 
     generateBigField() {
         this.node.innerHTML = '';
+        this.playerTurn = 0;
+        this.status = null;
         this.fieldArray = [];
 
         for (let i = 0; i < BIG_FIELD_SIZE * BIG_FIELD_SIZE; i++) {
@@ -30,7 +32,14 @@ export default class BigField {
         this.node.addEventListener('mousedown', this.handleMouseDown);
     }
 
+    gameSimulation() {
+            this.aiMove();
+            this.playerTurn = (this.playerTurn + 1) % players.length;
+    }
+
     handleMouseDown = (event) => {
+        if (this.status !== null) return;
+
         const cellNode = event.target.closest('.cell');
         if (!cellNode) return;
         const fieldNode = event.target.closest('.field');
@@ -39,23 +48,70 @@ export default class BigField {
         const fieldIndex = fieldNode.dataset.fieldIndex;
 
         const currentField = this.fieldArray[fieldIndex];
-        const thereWasAMove = currentField.tryMarkField(cellIndex, players[this.playerTurn]);
+        const userMadeMove = currentField.tryMarkField(cellIndex, players[this.playerTurn]);
 
-        if (thereWasAMove) {
+        if (userMadeMove) {
+            this.checkBigFieldStatus(fieldIndex);
+            if (this.status !== null) return;
             this.playerTurn = (this.playerTurn + 1) % players.length;
-
-            if (AI) {
-                let aiMadeTurn = false;
-                do {
-                    const randomCellIndex = getRandomInt(0, 9);
-                    const randomFieldIndex = getRandomInt(0, 9);
-                    const rCurrentField = this.fieldArray[randomFieldIndex];
-                    console.log(`AI trying cell: field: ${randomFieldIndex}, cell: ${randomCellIndex}`);
-                    aiMadeTurn = rCurrentField.tryMarkField(randomCellIndex, players[this.playerTurn]);
-                } while (!aiMadeTurn);
-
-                this.playerTurn = (this.playerTurn + 1) % players.length;
-            }
+            this.aiMove();
+            this.playerTurn = (this.playerTurn + 1) % players.length;
         }
     };
+
+    checkBigFieldStatus(fieldIndex) {
+        const checkArray = this.fieldArray.map(field => field.status);
+
+        if (this.fieldArray[fieldIndex].status === 'Tie') {
+            let isTie = checkFieldTie(checkArray);
+            if (isTie) {
+                this.status = 'Tie';
+            }
+        } else {
+            let isWin = checkFieldWin(fieldIndex, checkArray, BIG_FIELD_SIZE);
+            if (isWin) {
+                this.status = this.fieldArray[fieldIndex].status;
+            } else {
+                let isTie = checkFieldTie(checkArray);
+                if (isTie) {
+                    this.status = 'Tie';
+                }
+            }
+        }
+
+        if (this.status !== null) this.displayStatus(this.status);
+    }
+
+    displayStatus(status) {
+        console.log(`Big field status: ${status}`);
+        let alertString;
+        if (status === 'X') {
+            alertString = 'X won';
+        }
+        if (status === 'O') {
+            alertString = 'O won';
+        }
+        if (status === 'Tie') {
+            alertString = 'Tie';
+        }
+        setTimeout(() => alert(alertString), 100);
+    }
+
+    aiMove() {
+        if (this.status !== null) return;
+
+        let aiMadeTurn = false;
+        let randomFieldIndex;
+        let randomCellIndex;
+        do {
+            randomCellIndex = getRandomInt(0, 9);
+            randomFieldIndex = getRandomInt(0, 9);
+            const rCurrentField = this.fieldArray[randomFieldIndex];
+            if (rCurrentField.status !== null) continue;
+            aiMadeTurn = rCurrentField.tryMarkField(randomCellIndex, players[this.playerTurn]);
+        } while (!aiMadeTurn);
+
+        console.log(`AI marked cell: field: ${randomFieldIndex}, cell: ${randomCellIndex}`);
+        this.checkBigFieldStatus(randomFieldIndex);
+    }
 }

@@ -1,4 +1,6 @@
 import createNode from "../createNode.js";
+import checkFieldTie from "../functions/checkFieldTie.js";
+import checkFieldWin from "../functions/checkFieldWin.js";
 import Cell from "./Cell.js";
 
 const FIELD_SIZE = 3;
@@ -30,52 +32,20 @@ export default class Field {
     }
 
     checkFieldStatus(cellIndex) {
-        let isWin = this.checkFieldWin(cellIndex);
-        let isTie = this.checkFieldTie();
-        if (this.status !== null) this.displayStatus(this.status);
-    }
+        let checkArray = this.cellArray.map(cell => cell.owner);
 
-    checkFieldWin(cellIndex) {
-        let col = cellIndex % FIELD_SIZE;
-        let row = (cellIndex - col) / FIELD_SIZE;
-        let flagWinner = false;
-        // check rows cols diags
-        if (this.cellArray[0 * FIELD_SIZE + col].owner === this.cellArray[1 * FIELD_SIZE + col].owner &&
-            this.cellArray[0 * FIELD_SIZE + col].owner === this.cellArray[2 * FIELD_SIZE + col].owner) {
-            flagWinner = true;
-        }
-        if (this.cellArray[row * FIELD_SIZE + 0].owner === this.cellArray[row * FIELD_SIZE + 1].owner &&
-            this.cellArray[row * FIELD_SIZE + 0].owner === this.cellArray[row * FIELD_SIZE + 2].owner) {
-            flagWinner = true;
-        }
-        if (row == col) {
-            if (this.cellArray[0 * FIELD_SIZE + 0].owner === this.cellArray[1 * FIELD_SIZE + 1].owner &&
-                this.cellArray[0 * FIELD_SIZE + 0].owner === this.cellArray[2 * FIELD_SIZE + 2].owner) {
-                flagWinner = true;
-            }
-        }
-        if (row + col == FIELD_SIZE - 1) {
-            if (this.cellArray[0 * FIELD_SIZE + 2].owner === this.cellArray[1 * FIELD_SIZE + 1].owner &&
-                this.cellArray[0 * FIELD_SIZE + 2].owner === this.cellArray[2 * FIELD_SIZE + 0].owner) {
-                flagWinner = true;
-            }
-        }
-
-        if (flagWinner) {
+        let isWin = checkFieldWin(cellIndex, checkArray, FIELD_SIZE);
+        if (isWin) {
             this.status = this.cellArray[cellIndex].owner;
-            return true;
         }
-        return false;
-    }
+        else {
+            let isTie = checkFieldTie(checkArray);
+            if (isTie) {
+                this.status = 'Tie';
+            }
+        }
 
-    checkFieldTie() {
-        if (this.status !== null) return false;
-        let isTie = this.cellArray.filter(item => item.owner === null).length === 0;
-        if (isTie) {
-            this.status = 'Tie';
-            return true;
-        }
-        return false;
+        if (this.status !== null) this.displayStatus(this.status);
     }
 
     displayStatus(status) {

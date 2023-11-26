@@ -13,3 +13,5 @@ wrapper.append(heading);
 const bigField = new BigField();
 bigField.generateBigField();
 wrapper.append(bigField.node);
+
+// setInterval(() => bigField.gameSimulation(), 10);
